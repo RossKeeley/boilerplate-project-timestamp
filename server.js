@@ -21,27 +21,33 @@ app.get("/", function (req, res) {
 app.get("/api/timestamp/:date?", (req, res) => {
   const date = req.params.date;
   let utcDate;
+  // If date is empty, utcDate = new Date() to return the current time in unix format and utc format
   if (!date) {
     utcDate = new Date();
   } else {
+    // If date is not empty, evaluate if date is an integer
     if (!isNaN(date)) {
-      utcDate = new Date(parseInt(date))
+      // If date is an integer in string, convert to integer and utc format, and assign to utcDate
+      utcDate = new Date(parseInt(date));
     } else {
+      // Assign to utcDate
       utcDate = new Date(date);
-    }
-  }
+    };
+  };
+  // If the utcDate is invalid, return json response error
   if (utcDate.toString() === 'Invalid Date') {
     res.json({
       error: "Invalid Date"
     });
   } else {
+    // Return JSON response in the format:
+    // {"unix":1451001600000,"utc":"Fri, 25 Dec 2015 00:00:00 GMT"}
     res.json({
       unix: utcDate.getTime(), 
       utc: utcDate.toUTCString()
     });
   }
 });
-
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
